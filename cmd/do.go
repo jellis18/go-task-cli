@@ -2,25 +2,30 @@ package cmd
 
 import (
 	"fmt"
+	"log"
 	"strconv"
+	"task/db"
 
 	"github.com/spf13/cobra"
 )
 
 var doCmd = &cobra.Command{
 	Use:   "do",
-	Short: "Marks a task as complete",
+	Short: "Marks a task or tasks as complete",
 	Run: func(cmd *cobra.Command, args []string) {
-		var ids []int
 		for _, arg := range args {
 			id, err := strconv.Atoi(arg)
 			if err != nil {
 				fmt.Println("Failed to parse the argument:", arg)
 			}
 
-			ids = append(ids, id)
+			err = db.DeleteTask(id)
+			fmt.Println("Deleted task", id)
+			if err != nil {
+				log.Fatal(err)
+			}
+
 		}
-		fmt.Println(ids)
 	},
 }
 
